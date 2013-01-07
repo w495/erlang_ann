@@ -1,0 +1,1105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr" lang="en"><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    		<meta name="keywords" content="Erlang and Neural Networks">
+		<link rel="shortcut icon" href="http://www.trapexit.org/favicon.ico">
+		<link rel="search" type="application/opensearchdescription+xml" href="http://www.trapexit.org/opensearch_desc.php" title="Erlang Community (English)">
+    <title>Erlang Community - Erlang and Neural Networks - Trapexit</title>
+    <style type="text/css" media="screen,projection">/*<![CDATA[*/ @import "/skins/trapexit/main.css"; /*]]>*/</style>
+    <link rel="stylesheet" type="text/css" media="print" href="Erlang_and_Neural_Networks_files/commonPrint.css">
+    <!--[if lt IE 5.5000]><style type="text/css">@import "/skins/trapexit/IE50Fixes.css";</style><![endif]-->
+    <!--[if IE 5.5000]><style type="text/css">@import "/skins/trapexit/IE55Fixes.css";</style><![endif]-->
+    <!--[if gte IE 6]><style type="text/css">@import "/skins/trapexit/IE60Fixes.css";</style><![endif]-->
+    <!--[if IE]><script type="text/javascript" src="/skins/common/IEFixes.js"></script>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+																	     _uacct = "UA-235575-2";
+		//		urchinTracker();
+</script>
+
+    <meta http-equiv="imagetoolbar" content="no" /><![endif]-->
+<script type="text/javascript" src="Erlang_and_Neural_Networks_files/jquery.js"></script>
+<script type="text/javascript" src="Erlang_and_Neural_Networks_files/jquery-cycle-lite.js"></script>
+<script type="text/javascript">                                         
+        $(document).ready(function() {
+                $('#books').cycle('fade');
+        });
+</script>
+
+<script src="Erlang_and_Neural_Networks_files/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+    _uacct = "UA-235575-2";
+		_udn="trapexit.org";
+		urchinTracker();
+</script>
+
+                    <script type="text/javascript" src="Erlang_and_Neural_Networks_files/index.php"></script>
+    <script type="text/javascript" src="Erlang_and_Neural_Networks_files/wikibits.js"></script>
+    <style type="text/css">/*<![CDATA[*/
+@import "/index.php?title=MediaWiki:Common.css&usemsgcache=yes&action=raw&ctype=text/css&smaxage=18000";
+@import "/index.php?title=MediaWiki:Trapexit.org.css&usemsgcache=yes&action=raw&ctype=text/css&smaxage=18000";
+@import "/index.php?title=-&action=raw&gen=css&maxage=18000";
+/*]]>*/</style>              </head>
+  <body class="ns-0">
+<div id="titleBar"></div>
+    <div id="globalWrapper">
+      <div id="column-content">
+	<div id="content">
+	  <a name="top" id="contentTop"></a>
+	  	  <h1 class="firstHeading">Erlang and Neural Networks</h1>
+	  <div id="bodyContent">
+	    <h3 id="siteSub">From Erlang Community</h3>
+	    <div id="contentSub"></div>
+	    	    	    <!-- start content -->
+	    <p><br>
+by <a href="http://webjazz.blogspot.com/" class="external text" title="http://webjazz.blogspot.com/" rel="nofollow">Wilhelm</a>
+</p><p>This is a concatenated version of a series of blog posts on my <a href="http://webjazz.blogspot.com/" class="external text" title="http://webjazz.blogspot.com/" rel="nofollow">blog</a>, which is why it's rather long.  Therefore, I've done some editing to make sure it flowed nicely as one piece.
+</p><p>I assume that most of my audience are programmers that didn't 
+much like math. If they did, they probably wouldn't be reading this, and
+ would have read it themselves from a textbook.  Therefore, I will go 
+into explaining some implications of the math, but I don't actually do 
+any proofs.  If you liked math, feel free to make any corrections or 
+notify me through the wiki's messaging system for errors.  
+</p><p>I wrote this as I was learning Erlang.  I hope this article will be informative.
+</p>
+<table id="toc" class="toc" summary="Contents"><tbody><tr><td><div id="toctitle"><h2>Contents</h2> <span class="toctoggle">[<a href="javascript:toggleToc()" class="internal" id="togglelink">hide</a>]</span></div>
+<ul>
+<li class="toclevel-1"><a href="#How_Erlang_and_neural_networks_fit_together"><span class="tocnumber">1</span> <span class="toctext">How Erlang and neural networks fit together</span></a>
+<ul>
+<li class="toclevel-2"><a href="#Yet_Another_Programming_Language"><span class="tocnumber">1.1</span> <span class="toctext">Yet Another Programming Language</span></a></li>
+<li class="toclevel-2"><a href="#A_quick_detour_in_neural_networks"><span class="tocnumber">1.2</span> <span class="toctext">A quick detour in neural networks</span></a></li>
+<li class="toclevel-2"><a href="#A_good_fit_for_Erlang"><span class="tocnumber">1.3</span> <span class="toctext">A good fit for Erlang</span></a></li>
+<li class="toclevel-2"><a href="#State_of_the_Purely_Functional"><span class="tocnumber">1.4</span> <span class="toctext">State of the Purely Functional</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1"><a href="#Building_a_perceptron"><span class="tocnumber">2</span> <span class="toctext">Building a perceptron</span></a>
+<ul>
+<li class="toclevel-2"><a href="#The_essence_of_a_perceptron"><span class="tocnumber">2.1</span> <span class="toctext">The essence of a perceptron</span></a></li>
+<li class="toclevel-2"><a href="#The_body_of_a_nerve"><span class="tocnumber">2.2</span> <span class="toctext">The body of a nerve</span></a></li>
+<li class="toclevel-2"><a href="#Test_Drive"><span class="tocnumber">2.3</span> <span class="toctext">Test Drive</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1"><a href="#Interconnecting_Perceptrons"><span class="tocnumber">3</span> <span class="toctext">Interconnecting Perceptrons</span></a>
+<ul>
+<li class="toclevel-2"><a href="#Drawing_a_line_in_the_sand"><span class="tocnumber">3.1</span> <span class="toctext">Drawing a line in the sand</span></a></li>
+<li class="toclevel-2"><a href="#Why_not_just_one.3F"><span class="tocnumber">3.2</span> <span class="toctext">Why not just one?</span></a></li>
+<li class="toclevel-2"><a href="#Shake_my_hand_and_link_up_to_form_Voltron"><span class="tocnumber">3.3</span> <span class="toctext">Shake my hand and link up to form Voltron</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1"><a href="#Getting_your_learn_on"><span class="tocnumber">4</span> <span class="toctext">Getting your learn on</span></a>
+<ul>
+<li class="toclevel-2"><a href="#The_ways_of_learning"><span class="tocnumber">4.1</span> <span class="toctext">The ways of learning</span></a></li>
+<li class="toclevel-2"><a href="#Carrying_the_Error_Backwards"><span class="tocnumber">4.2</span> <span class="toctext">Carrying the Error Backwards</span></a></li>
+<li class="toclevel-2"><a href="#Propagating_from_the_output"><span class="tocnumber">4.3</span> <span class="toctext">Propagating from the output</span></a></li>
+<li class="toclevel-2"><a href="#The_hyperplane"><span class="tocnumber">4.4</span> <span class="toctext">The hyperplane</span></a></li>
+<li class="toclevel-2"><a href="#If_your_eyes_glazed_over"><span class="tocnumber">4.5</span> <span class="toctext">If your eyes glazed over</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1"><a href="#Refactoring_code"><span class="tocnumber">5</span> <span class="toctext">Refactoring code</span></a>
+<ul>
+<li class="toclevel-2"><a href="#Vector_map"><span class="tocnumber">5.1</span> <span class="toctext">Vector map</span></a></li>
+<li class="toclevel-2"><a href="#f.27.28netj.29"><span class="tocnumber">5.2</span> <span class="toctext">f'(netj)</span></a></li>
+<li class="toclevel-2"><a href="#Some_helper_functions_to_refactor"><span class="tocnumber">5.3</span> <span class="toctext">Some helper functions to refactor</span></a></li>
+<li class="toclevel-2"><a href="#Taking_note_of_sensitivities"><span class="tocnumber">5.4</span> <span class="toctext">Taking note of sensitivities</span></a></li>
+<li class="toclevel-2"><a href="#The_actual_learning"><span class="tocnumber">5.5</span> <span class="toctext">The actual learning</span></a></li>
+<li class="toclevel-2"><a href="#Test_Run"><span class="tocnumber">5.6</span> <span class="toctext">Test Run</span></a></li>
+<li class="toclevel-2"><a href="#The_trainer_and_bias"><span class="tocnumber">5.7</span> <span class="toctext">The trainer and bias</span></a></li>
+<li class="toclevel-2"><a href="#In_Conclusion"><span class="tocnumber">5.8</span> <span class="toctext">In Conclusion</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></tbody></table><script type="text/javascript"> if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
+<a name="How_Erlang_and_neural_networks_fit_together"></a><h2><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=1" title="Edit section: How Erlang and neural networks fit together">edit</a>]</span> <span class="mw-headline"> How Erlang and neural networks fit together </span></h2>
+<p>It started with an article about how the <a href="http://www.gotw.ca/publications/concurrency-ddj.htm" class="external text" title="http://www.gotw.ca/publications/concurrency-ddj.htm" rel="nofollow">free lunch is over</a>
+ for software engineers that a friend sent to me about two years ago.  
+It basically stated that developers have been riding on the wave of 
+Moore's law to save their butts, and it's not going to last forever.  In
+ addition, it's been known for a while that chip manufacturers are 
+moving towards multi-core processors to increase performance.  If 
+developers are going to take advantage of hardware like they have been, 
+they're going to have to learn how to program concurrent programs.
+</p><p>The problem is, programmers suck at it.  It's well known that concurrent programming, as it stands, is <a href="http://bc.tech.coop/blog/060105.html" class="external text" title="http://bc.tech.coop/blog/060105.html" rel="nofollow">not easy for humans</a>.  Even Tim Sweeney, the guy that architected the Unreal Engine (no mere programming mortal), <a href="http://www.cs.princeton.edu/%7Edpw/popl/06/Tim-POPL.ppt" class="external text" title="http://www.cs.princeton.edu/%7Edpw/popl/06/Tim-POPL.ppt" rel="nofollow">thought it was hard</a>.  It was when I started <a href="http://webjazz.blogspot.com/2007/02/for-love-of-programmers-we-need-better.html" class="external text" title="http://webjazz.blogspot.com/2007/02/for-love-of-programmers-we-need-better.html" rel="nofollow">looking beyond threads</a> as a concurrency abstraction that I tripped over a programming language developed specifically for concurrency.
+</p>
+<a name="Yet_Another_Programming_Language"></a><h3><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=2" title="Edit section: Yet Another Programming Language">edit</a>]</span> <span class="mw-headline"> Yet Another Programming Language </span></h3>
+<p>I had always thought that I should learn more about functional 
+programming.  It seemed like an odd beast to me, especially since you 
+don't change state through side-effects.  "How do you get anything 
+done?"  It's kinda like when you first learned that <a href="http://www.acm.org/classics/oct95/" class="external text" title="http://www.acm.org/classics/oct95/" rel="nofollow">you don't need GOTO</a>, and subsequently, when you learned that <a href="http://notes-on-haskell.blogspot.com/2007/02/whats-wrong-with-for-loop.html" class="external text" title="http://notes-on-haskell.blogspot.com/2007/02/whats-wrong-with-for-loop.html" rel="nofollow">FOR loops suck</a>.
+</p><p>And yet, I never really found a need or a small project I could 
+do with functional programming that might prove to be satisfying.  It 
+was only due to the search for better concurrency abstractions that I 
+ran across <a href="http://www.erlang.org/about.html" class="external text" title="http://www.erlang.org/about.html" rel="nofollow">Erlang</a>,
+ a functional programming language that is used explicitly because it's 
+good at concurrency.  In fact, it's pretty much the only one out there 
+that touts concurrency as its strength.
+</p><p>It uses the actor model, where processes share no data and just 
+pass messages around.  Because there's nothing shared, there's no issue 
+of synchronization or deadlocks.  While not as sexy-sounding as futures 
+or software transactional memory, the actor model falls nicely along the
+ lines of complex and emergent systems--systems that have locally 
+interacting parts with a global emergent behavior.   Could one of these 
+systems be good for a small side project to do in Erlang?
+</p>
+<a name="A_quick_detour_in_neural_networks"></a><h3><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=3" title="Edit section: A quick detour in neural networks">edit</a>]</span> <span class="mw-headline"> A quick detour in neural networks </span></h3>
+<p>Artificial neural networks seemed to be the perfect thing actually.  A quick, quick diversion into what they are.
+</p>
+<pre>                <a href="http://www.trapexit.org/Image:Perceptron.gif" class="image" title="image:perceptron.gif"><img alt="image:perceptron.gif" longdesc="/Image:Perceptron.gif" src="Erlang_and_Neural_Networks_files/Perceptron.gif" height="318" width="458"></a>
+</pre>
+<p>A feed-forward <a href="http://en.wikipedia.org/wiki/Artificial_neural_network" class="external text" title="http://en.wikipedia.org/wiki/Artificial_neural_network" rel="nofollow">artificial neural network</a>
+ is basically a network of perceptrons that can be trained to classify 
+(recognize) patterns.  You give the network a pattern as an input, it 
+can tell you the classification of that input as an output.
+</p><p>You can think of a perceptron much like a neuron in your brain, 
+where it has lots of inputs and one output.   It's connected to other 
+perceptrons through these inputs and outputs and there are weights 
+attached to the input connections.  If there is a pattern of input, and 
+it passes a threshold, the perceptron 'fires' (i.e. outputs a value).  
+This in turn might activate other perceptrons.
+</p><p>Even simpler, a perceptron is modeled as a function that takes a vector <span style="font-weight: bold;">x</span> as an input and  outputs a number y.   All it does is take the dot product (ie. weighted sum) of the input vector <span style="font-weight: bold;">x</span> with weights vector <span style="font-weight: bold;">w</span>, and pass it through a non-linear and  continuous thresholding function, usually a <a href="http://mathworld.wolfram.com/SigmoidFunction.html" class="external text" title="http://mathworld.wolfram.com/SigmoidFunction.html" rel="nofollow">sigmoid function</a>.
+   When you connect them up in layers, you get an artificial neural 
+network that can learn to classify patterns if you train it with 
+examples.
+</p><p>It has to learn patterns by adjusting the weights between 
+perceptrons in the network after each training example, and you tell it 
+how wrong it was in recognizing the pattern.  It does this by an 
+algorithm called <a href="http://galaxy.agh.edu.pl/%7Evlsi/AI/backp_t_en/backprop.html" class="external text" title="http://galaxy.agh.edu.pl/%7Evlsi/AI/backp_t_en/backprop.html" rel="nofollow">back propagation</a>.  It's the same page I lifted all these pictures from.  I put all their pictures in an animated gif to illustrate:
+</p>
+<pre>           <a href="http://www.trapexit.org/Image:Animate_ANN.gif" class="image" title="Image:animate_ANN.gif"><img alt="Image:animate_ANN.gif" longdesc="/Image:Animate_ANN.gif" src="Erlang_and_Neural_Networks_files/Animate_ANN.gif" height="390" width="572"></a>
+</pre>
+<p>In the first part, the example propagates forward to an output.  Then
+ it propagates back the error.  Lastly, it propagates forward the 
+adjusted weights from the calculated error.  This is not the only type 
+of neural network that exists, but we're going to be building this type.
+</p>
+<a name="A_good_fit_for_Erlang"></a><h3><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=4" title="Edit section: A good fit for Erlang">edit</a>]</span> <span class="mw-headline"> A good fit for Erlang </span></h3>
+<p>Why would this be a good fit as a subject to play with Erlang?  Well,
+ if you'll notice, each perceptron only takes input from its neighboring
+ perceptrons, and only outputs to its neighbors.  This is very much in 
+line with the actor model of concurrency.  Each process would be a 
+perceptron, and would act as an autonomous agent that only interacts 
+with other processes it comes into contact with--in this case, only 
+other perceptrons it's connected to.
+</p><p>In addition, you'll also notice that in the animation, the 
+perceptron values are calculated neuron by neuron.  In a concurrent 
+system, there's no reason to do this!  You can actually do the 
+calculation layer by layer, since the calculations of any individual 
+perceptron only comes from the outputs of the perceptrons in the layers 
+before it.  Therefore, all outputs for perceptrons in a layer can be 
+calculated in parallel.
+</p><p>Notice, however, that layers need to be calculated serially.  I 
+had originally thought that with the learning process propagating back 
+and forth, maybe it could be pipelined.  On closer examination, however,
+ the best one can do is to feed-forward the next input one layer behind 
+the adjusting of weights, to make the learning process go faster.
+</p>
+<a name="State_of_the_Purely_Functional"></a><h3><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=5" title="Edit section: State of the Purely Functional">edit</a>]</span> <span class="mw-headline"> State of the Purely Functional </span></h3>
+<p>Erlang is a purely functional programming language.  Functional style
+ programming is nothing new--it's just been lurking in the more academic
+ corners of computer science.  In the transition from 
+imperative/procedural/OO programming to functional programming, there 
+are new concepts to grok.  You'll hear this from people just <a href="http://azaidi.blogspot.com/2007/04/zen-and-art-of-functional-programming.html" class="external text" title="http://azaidi.blogspot.com/2007/04/zen-and-art-of-functional-programming.html" rel="nofollow">learning functional programming for the first time</a>
+ (myself included).  The hardest thing for me to get over in a pure 
+functional language is the absence of state.  My first reaction was, 
+"Well, how do you get anything done?"
+</p><p>Not having state has its advantages, and you'll hear stuff about 
+side-effects and referential transparency.  But I'd like to think of it 
+as, <span style="font-style: italic;">things that don't have state can't be broken--they just exist</span>.
+  However, state is useful in computation, and different languages have 
+different ways of getting around it.  With Haskell, you use monads.  At 
+first, I figured it was the same with Erlang.  But in <a href="http://tamale.net/erlang/tutorial.shtml" class="external text" title="http://tamale.net/erlang/tutorial.shtml" rel="nofollow">this short tutorial on Erlang</a>, it simply states that Erlang uses Erlang processes to keep state. 
+</p><p>This maps pretty well with what we're trying to do.  Each 
+perceptron has state:  its weights.  In an object-orientated language, 
+you may keep the weights as attributes in an object.  In Erlang, each 
+perceptron will be an Erlang process.  It will "keep its state" by 
+calling itself recursively and passing itself back the necessary state 
+information.  Any communication between perceptrons will be by send 
+messages back and forth as they fire and stimulate each other.
+</p>
+<a name="Building_a_perceptron"></a><h2><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=6" title="Edit section: Building a perceptron">edit</a>]</span> <span class="mw-headline"> Building a perceptron </span></h2>
+<p>Enough intro on Erlang and Neural Networks.  Let's get to building a perceptron.
+</p>
+<a name="The_essence_of_a_perceptron"></a><h3><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=7" title="Edit section: The essence of a perceptron">edit</a>]</span> <span class="mw-headline"> The essence of a perceptron </span></h3>
+<pre>                <a href="http://www.trapexit.org/Image:Perceptron2.gif" class="image" title="Image:perceptron2.gif"><img alt="Image:perceptron2.gif" longdesc="/Image:Perceptron2.gif" src="Erlang_and_Neural_Networks_files/Perceptron2.gif" height="318" width="458"></a>
+</pre>
+<p>So once again, this is a perceptron.  It's a weighted sum (a dot 
+product) of the inputs, which is then thresholded by f(e).  So we'll 
+write a thresholding function and a weighted sum in Erlang.
+</p><p>We start by declaring the name of the module, and the functions to export from the module.
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>-module(ann).
+-export([perceptron/3, sigmoid/1, dot_prod/2, feed_forward/2,
+replace_input/2, convert_to_list/1]).</pre></td></tr></tbody></table>
+<p>I exported most of the functions, so I can run them from the command line.  I'll remove them later on.
+</p><p>First we write our thresholding function.  We will use the <a href="http://www.computing.dcu.ie/%7Ehumphrys/Notes/Neural/sigmoid.html" class="external text" title="http://www.computing.dcu.ie/%7Ehumphrys/Notes/Neural/sigmoid.html" rel="nofollow">sigmoid function</a> as our thresholding function.  It's pretty easy to explain. A value, <span style="font-style: italic;">X</span> goes in, another value comes out.  It's a math function.
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>sigmoid(X) -&gt;
+  1 / (1 + math:exp(-X)).</pre></td></tr></tbody></table>
+<p>Since I wasn't as familiar with all the libraries in Erlang, and I 
+wrote a dot product function, and it wasn't too bad.  Erlang, for the 
+most part, doesn't use loops.  The common way is to use library 
+functions for list processing, list comprehensions, or recursion.  I 
+just decided to try my hand at writing a recursive function.  It's been a
+ while.  The first part is the base case, and the second part is what 
+you'd do if the "recursion fairy" took care of the rest.
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>dot_prod([], []) -&gt;
+  0;
+dot_prod([X_head | X_tail], [Y_head | Y_tail]) -&gt;
+  X_head * Y_head + dot_prod(X_tail, Y_tail).</pre></td></tr></tbody></table>
+<p>Simple, so far, right?  So to calculate the feed forward output of a perceptron, we'll do this:
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>feed_forward(Weights, Inputs) -&gt;
+  sigmoid(dot_prod(Weights, Inputs)).</pre></td></tr></tbody></table>
+<a name="The_body_of_a_nerve"></a><h3><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=8" title="Edit section: The body of a nerve">edit</a>]</span> <span class="mw-headline"> The body of a nerve </span></h3>
+<p>So far, so good.  But we still need to create the actual perceptron!  This is where the processes and state-keeping comes up.
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>perceptron(Weights, Inputs, Output_PIDs) -&gt;
+ receive
+   {stimulate, Input} -&gt;
+     % add Input to Inputs to get New_Inputs...
+     % calculate output of perceptron...
+     % stimulate the perceptron my output is connected to
+     perceptron(Weight, New_inputs, Output_PIDs)
+ end.</pre></td></tr></tbody></table>
+<p>This is an Erlang process, and it receives messages from other Erlang processes.  Currently, it only accepts one message, <span style="font-style: italic;">stimulate(Input)</span>
+ from other Erlang processes.  This is a message that other perceptrons 
+will use to send its output to this perceptron's inputs.  If a 
+perceptron is stimulated, we should update our list of inputs, then 
+calculate the new output of the perceptron, and then stimulate the 
+perceptron my output is connected to.
+</p><p>Notice that at the end of the message, we call the processes again, with <span style="font-style: italic;">New_Inputs</span>.  That's how we will maintain and change state.
+</p><p>Note this won't result in a stack overflow, because Erlang knows 
+it doesn't have to keep the stack around.  This is because no state is 
+ever kept between messages calls and everything you need to know is 
+passed into the function perceptron, so we can throw away the previous 
+instances of the call to perceptron.
+</p><p>We do come to a snag though.  How do we know which other 
+perceptron the incoming input is from?  We need to know this because we 
+need to be able to weigh it correctly.  My solution is that <span style="font-style: italic;">Input</span>
+ is actually a tuple, consisting of {Process_ID_of_sender, Input_value}.
+  And then I keep a list of these tuples, like a hash of PID to input 
+values, and convert them to a list of input values when I need to 
+calculate the output.  Therefore, we end up with:
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>perceptron(Weights, Inputs, Output_PIDs) -&gt;
+  receive
+    {stimulate, Input} -&gt;
+       % add Input to Inputs to get New_Inputs...
+       New_inputs = replace_input(Inputs, Input),
+  
+       % calculate output of perceptron...
+       Output = feed_forward(Weights, convert_to_list(New_inputs)),
+  
+       perceptron(Weights, New_inputs, Output_PIDs)
+end.
+
+replace_input(Inputs, Input) -&gt;
+  {Input_PID, _} = Input,
+  lists:keyreplace(Input_PID, 1, Inputs, Input).
+
+convert_to_list(Inputs) -&gt;
+  lists:map(fun(Tup) -&gt;
+             {_, Val} = Tup,
+             Val
+           end,
+           Inputs).</pre></td></tr></tbody></table>
+<p>If you're not familiar with the map function, check out <a href="http://www.joelonsoftware.com/items/2006/08/01.html" class="external text" title="http://www.joelonsoftware.com/items/2006/08/01.html" rel="nofollow">Joel's explanation on it</a>.  The map function you see in <span style="font-style: italic;">convert_to_list()</span> is the same as the map function in ruby that would go:
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>def convert_to_list(inputs)
+ inputs.map { |tup| tup.last }
+end</pre></td></tr></tbody></table>
+<p>Now, there's one last thing that needs to be done.  Once we calculate
+ an output, we need to fire that off to other perceptrons that accept 
+this perceptron's output as its input.  And if it's not connected to 
+another perceptron, then it should just output its value.  So then we 
+end up with:
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>perceptron(Weights, Inputs, Output_PIDs) -&gt;
+ receive
+   {stimulate, Input} -&gt;
+     % add Input to Inputs to get New_Inputs...
+     New_inputs = replace_input(Inputs, Input),
+
+     % calculate output of perceptron...
+     Output = feed_forward(Weights, convert_to_list(New_inputs)),
+
+     % stimulate the perceptron my output is connected to
+     if Output_PIDs =/= [] -&gt;
+          lists:foreach(fun(Output_PID) -&gt;
+                          Output_PID&nbsp;! {stimulate, {self(), Output}}
+                        end,
+                        Output_PIDs);
+        Output_PIDs =:= [] -&gt;
+          io:format("~n~w outputs: ~w", [self(), Output])
+     end,
+     perceptron(Weights, New_inputs, Output_PIDs)
+ end.</pre></td></tr></tbody></table>
+<p>We know which perceptrons to output to, because we keep a list of 
+perceptron PIDs that registered with us.  So if the list of Output_PIDs 
+is not empty, then for each PID, send them a message with a tuple that 
+contains this perceptron's PID as well as the calculated Output value.  
+Let's try it out in a test drive
+</p>
+<a name="Test_Drive"></a><h3><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=9" title="Edit section: Test Drive">edit</a>]</span> <span class="mw-headline"> Test Drive </span></h3>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>1&gt; c(ann).
+{ok,ann}
+2&gt; Pid = spawn(ann, perceptron, [[0.5, 0.2], [{1,0.6}, {2,0.9}], []]).
+&lt;0.39.0&gt;
+3&gt; Pid&nbsp;! {stimulate, {1,0.3}}.
+
+&lt;0.39.0&gt; outputs: 0.581759
+{stimulate,{1,0.300000}}
+4&gt;
+</pre></td></tr></tbody></table>
+<p>So you can see, we got an output of 0.581759.  We can verify this by doing this on our TI-85 calculator:
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>x = 0.5 * 0.3 + 0.2 * 0.9
+Done
+1 / (1 + e^-x)
+.581759376842</pre></td></tr></tbody></table>
+<p>And so we know our perceptron is working feeding forward!  Next, we have to figure out how to connect them up to each other.
+</p>
+<a name="Interconnecting_Perceptrons"></a><h2><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=10" title="Edit section: Interconnecting Perceptrons">edit</a>]</span> <span class="mw-headline"> Interconnecting Perceptrons </span></h2>
+<p>We see that neural network is basically made up of interconnected 
+perceptrons (or neurons), and they are basically modeled as a linear 
+combination of inputs and weights with a non-linear function that 
+modifies the output.
+</p>
+<a name="Drawing_a_line_in_the_sand"></a><h3><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=11" title="Edit section: Drawing a line in the sand">edit</a>]</span> <span class="mw-headline"> Drawing a line in the sand </span></h3>
+<p>Classifiers often do very well strictly on probabilities, such as 
+Bayesian Spam Filters.  But often times, we don't know what the 
+underlying probabilities are for the data, and not only that, we don't 
+have lots of training data to build accurate probability densities.  One
+ way around that is to draw a line in the data space that acts as the 
+decision boundary between two (or more) classes.  That way, you only 
+have to find the parameters (i.e. weights) of the line, which is often 
+fewer in number than the entire probability space.
+</p><p>This is exactly what a perceptron does.  It creates a decision 
+boundary in data space.  If the data space is a plane (2D, or having two
+ inputs), then it draws a line.  In 3D, it draws a plane.  For higher 
+data space dimensions (4D or more), it draws a hyperplane.
+</p>
+<a name="Why_not_just_one.3F"></a><h3><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=12" title="Edit section: Why not just one?">edit</a>]</span> <span class="mw-headline"> Why not just one? </span></h3>
+<p>The problem with just using a perceptron is that it can only classify
+ data that is linearly separable--meaning data you can separate with a 
+line. The <a href="http://www.generation5.org/content/1999/perceptron.asp" class="external text" title="http://www.generation5.org/content/1999/perceptron.asp" rel="nofollow">XOR problem</a>
+ is a simple illustration of how you can't draw a line that separates 
+between on and off in an XOR.   Minsky and Papert wrote a famous paper 
+that kinda <a href="http://www.ucs.louisiana.edu/%7Eisb9112/dept/phil341/histconn.html" class="external text" title="http://www.ucs.louisiana.edu/%7Eisb9112/dept/phil341/histconn.html" rel="nofollow">killed off research</a> in this field for about a decade because they pointed this out.
+</p><p>So to get around this linearity, smart people eventually figured 
+out that they can chain perceptrons together in layers, and that gives 
+them the ability to express ANY non-linear function, given an adequate 
+number of hidden layers.
+</p>
+<a name="Shake_my_hand_and_link_up_to_form_Voltron"></a><h3><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=13" title="Edit section: Shake my hand and link up to form Voltron">edit</a>]</span> <span class="mw-headline"> Shake my hand and link up to form Voltron </span></h3>
+<p>Let's try linking our perceptrons together.  We're going to add two more messages to our perceptrons:
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>perceptron(Weights, Inputs, Output_PIDs) -&gt;
+  receive
+  % The other messages from previous parts
+
+  {connect_to_output, Receiver_PID} -&gt;
+    Combined_output = [Receiver_PID | Output_PIDs],
+    io:format("~w output connected to ~w: ~w~n", [self(), Receiver_PID, Combined_output]),
+    perceptron(Weights, Inputs, Combined_output);
+  {connect_to_input, Sender_PID} -&gt;
+    Combined_input = [{Sender_PID, 0.5} | Inputs],
+    io:format("~w inputs connected to ~w: ~w~n", [self(), Sender_PID, Combined_input]),
+    perceptron([0.5 | Weights], Combined_input, Output_PIDs)
+end.
+
+connect(Sender_PID,  Receiver_PID) -&gt;
+  Sender_PID&nbsp;! {connect_to_output, Receiver_PID},
+  Receiver_PID&nbsp;! {connect_to_input, Sender_PID}.
+</pre></td></tr></tbody></table>
+<p>We would never call connect_to_output() or connect_to_input() 
+directory.  We'd just use connect().  It basically just adds the 
+perceptron's process ID to each other, so they know who to send messages
+ to when they have an output.
+</p><p>Note that the last message connect_to_input() isn't followed by a
+ semicolon.  That means every message before it in perceptron needs to 
+end with one.  So if you've been following along, the stimulate() 
+message from part II needs a semicolon at the end of it now.
+</p><p>We can now connect up our perceptrons, but with the way it is, 
+currently, we'd have to send a separate message to each perceptron 
+connected to an input to the network.  This is tedious.  We are 
+programmers and we are lazy.  Let's make a perceptron also double as an 
+source node.  As source node simply passes its input to to its outputs.
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>perceptron(Weights, Inputs, Output_PIDs) -&gt;
+receive
+  % previous messages above and in part II
+
+  {pass, Input_value} -&gt;
+    lists:foreach(fun(Output_PID) -&gt;
+                    io:format("Stimulating ~w with ~w~n", [Output_PID, Input_value]),
+                    Output_PID&nbsp;! {stimulate, {self(), Input_value}}
+                  end,
+                  Output_PIDs);
+end.
+</pre></td></tr></tbody></table>
+<p>Now we can start creating perceptrons.
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>64&gt; N1_pid = spawn(ann, perceptron, [[],[],[]]).
+&lt;0.325.0&gt;
+65&gt; N2_pid = spawn(ann, perceptron, [[],[],[]]).
+&lt;0.327.0&gt;
+66&gt; N3_pid = spawn(ann, perceptron, [[],[],[]]).
+&lt;0.329.0&gt;</pre></td></tr></tbody></table>
+<p>Note that we get back three process IDs of the three perceptrons we created.  Then we start connecting them.
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>67&gt; ann:connect(N1_pid, N2_pid).
+&lt;0.325.0&gt; output connected to &lt;0.327.0&gt;: [&lt;0.327.0&gt;]
+&lt;0.327.0&gt; inputs connected to &lt;0.325.0&gt;: [{&lt;0.325.0&gt;,0.500000}]
+{connect_to_input,&lt;0.325.0&gt;}
+68&gt; ann:connect(N1_pid, N3_pid).
+&lt;0.325.0&gt; output connected to &lt;0.329.0&gt;: [&lt;0.329.0&gt;,&lt;0.327.0&gt;]
+&lt;0.329.0&gt; inputs connected to &lt;0.325.0&gt;: [{&lt;0.325.0&gt;,0.500000}]
+{connect_to_input,&lt;0.325.0&gt;}</pre></td></tr></tbody></table>
+<p>We used N1 as an input node connected to perceptrons 2 and 3.  So if 
+N1 is passed a value, N2 and N3 should be stimulated with that value.
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>69&gt; N1_pid&nbsp;! {pass, 0.5}.
+Stimulating &lt;0.329.0&gt; with 0.500000
+{pass,0.500000}Stimulating &lt;0.327.0&gt; with 0.500000
+
+&lt;0.329.0&gt; outputs: 0.562177
+
+&lt;0.327.0&gt; outputs: 0.562177
+</pre></td></tr></tbody></table>
+<p>Hurray!  So now, the network's got tentacles, that we can connect all
+ over the place, writhing, and wiggling with all its glee.  However, 
+this is currently a DUMB network.  It can't classify anything because we
+ haven't told it how to learn anything yet.    How does it learn to 
+classify things?  It does so by adjusting the weights of the inputs of 
+each perceptron in the network.  And this, is the crux of neural 
+networks in all its glory.  
+</p>
+<a name="Getting_your_learn_on"></a><h2><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=14" title="Edit section: Getting your learn on">edit</a>]</span> <span class="mw-headline"> Getting your learn on </span></h2>
+<p>In the last part, we were able to connect the perceptrons to each 
+other.  This time, we're going to look at how you'd actually learn.
+</p>
+<a name="The_ways_of_learning"></a><h3><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=15" title="Edit section: The ways of learning">edit</a>]</span> <span class="mw-headline"> The ways of learning </span></h3>
+<p>There are many types of neural networks.  But this one that we're 
+building is a classic feed-forward neural network.  A feed-forward 
+neural network is a linear classifier, and the way it learns is to 
+adjust the <a href="http://en.wikipedia.org/wiki/Hyperplane" class="external text" title="http://en.wikipedia.org/wiki/Hyperplane" rel="nofollow">hyperplane</a>
+ that separates different classes in multi-dimensional space to minimize
+ classification error, according to what it has seen before.  The way 
+that one would adjust the hyperplane is to change the value of the 
+weights in the neural network.  But how much to adjust it?
+</p><p>The classic way is to use back propagation, which we'll explore here.  Back propagation at its heart is just <a href="http://en.wikipedia.org/wiki/Gradient_descent" class="external text" title="http://en.wikipedia.org/wiki/Gradient_descent" rel="nofollow">gradient descent</a>.
+  The layman's term of gradient descent is "pick the direction that 
+gives me the steepest change".  Gradient descent is known to get stuck 
+at local minima(or maxima).  But doing gradient descent in a high 
+dimensional space like neural networks, it seems like it's hard to get 
+stuck in a local minima, because there's always another "dimension" to 
+escape.
+</p><p>People since used other methods to calculate the weights, such as
+ genetic algorithms and particle swarm optimization.  You can basically 
+use any type of optimization algorithm to adjust the weights.  Since 
+back propagation is commonly associated with feed-forward neural 
+networks, we'll concentrate on that.
+</p>
+<a name="Carrying_the_Error_Backwards"></a><h3><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=16" title="Edit section: Carrying the Error Backwards">edit</a>]</span> <span class="mw-headline"> Carrying the Error Backwards </span></h3>
+<p>To figure out the error at the output node is easy.  You simply 
+subtract the output from what the output was suppose to be, and that's 
+your error (not exactly, but that's the idea).  Given that error, it's 
+relatively easy to adjust the weights of the output node.  The problem 
+is, how do you adjust weights in the hidden layers when you can't 
+directly see their output?  Even if you could, how would you know which 
+way to adjust it, since it would affect other nodes?
+</p><p>The basic idea of back propagation is to get the output of the 
+network and compare its decision with the decision it should have made, 
+and more importantly, how far off it was.  That is the error rate of 
+decision.  We'll take that error and propagate it backwards towards the 
+input so we will know how to adjust the weights, layer by layer.
+</p><p>I'm not going to go too much into the hows and whys back 
+propagation, since I feel like there's a lot of tutorials out there that
+ do it justice.  If you need a book, I suggest <a href="http://www.amazon.com/AI-Application-Programming-Tim-Jones/dp/1584502789" class="external text" title="http://www.amazon.com/AI-Application-Programming-Tim-Jones/dp/1584502789" rel="nofollow">AI Application Programming</a>
+ by Tim Jones.  And I won't go into the proof either.  But I will show 
+and explain the result, since it makes understanding the code a lot 
+easier.
+</p>
+<a name="Propagating_from_the_output"></a><h3><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=17" title="Edit section: Propagating from the output">edit</a>]</span> <span class="mw-headline"> Propagating from the output </span></h3>
+<p>Calculating the change in weights for the output node isn't too bad. Using my awesome GIMP skillz...it looks like this:
+</p>
+<pre>                <a href="http://www.trapexit.org/Image:Ann_labels.png" class="image" title="Image:ann_labels.png"><img alt="Image:ann_labels.png" longdesc="/Image:Ann_labels.png" src="Erlang_and_Neural_Networks_files/Ann_labels.png" height="300" width="420"></a>
+</pre>
+<p>We'll start from the back.  I color coded it to make it easier to 
+figure out what the equations are saying.  (If a variable is bolded, 
+that means it's a vector) The error of output of the training input is:
+</p><p>(1)    J(<span style="font-weight: bold;">w</span>) = ½ ∑ (<span>t<sub style="color: rgb(204, 0, 0);">k</sub> - <span style="color: rgb(204, 0, 0);">z</span><sub style="color: rgb(204, 0, 0);">k</sub></span>)<sup><span>2</span></sup> = ½ * ||<span style="font-weight: bold;">t - <span style="color: rgb(204, 0, 0);">z</span></span>||<span style="font-weight: bold;"><sup>2</sup></span>
+</p><p>where t is what the output should have been, and z is what we 
+actually got from the neural network.  J(w) is basically a sum of all 
+the errors across all output nodes.  You'd want a square of the 
+differences because you want to make all differences positive before you
+ sum them, so the errors don't cancel each other out.  The double lines 
+stand for <a href="http://en.wikipedia.org/wiki/Norm_%28mathematics%29" class="external text" title="http://en.wikipedia.org/wiki/Norm_%28mathematics%29" rel="nofollow">norm</a>.  You can think of norm as "length of vector".  Norm is just a convenient way to write it.
+</p><p>If you wanted to derive back propagation, you'd take the derivative of J(<span style="font-weight: bold;">w</span>) with respect to <span style="font-weight: bold;">w</span>,
+ and try to minimize J.  Remember what I said about going in the 
+direction of steepest change in error?  Well, to calculate change, you 
+calculate the derivative (since derivative means change), and that's why
+ you'd do it in the proof.  If you want to follow the proof, check out 
+page 290-293 of <a href="http://www.amazon.com/Pattern-Classification-2nd-Richard-Duda/dp/0471056693/ref=pd_bbs_sr_1/102-9577008-0324967?ie=UTF8&amp;s=books&amp;qid=1183961912&amp;sr=8-1" class="external text" title="http://www.amazon.com/Pattern-Classification-2nd-Richard-Duda/dp/0471056693/ref=pd_bbs_sr_1/102-9577008-0324967?ie=UTF8&amp;s=books&amp;qid=1183961912&amp;sr=8-1" rel="nofollow">Pattern Classification</a> by Duda, Hart, and Stork.
+</p>
+<a name="The_hyperplane"></a><h3><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=18" title="Edit section: The hyperplane">edit</a>]</span> <span class="mw-headline"> The hyperplane </span></h3>
+<p>Skipping all the proof, you'd get two equations by deriving from J(<b>w</b>).
+  One for calculating the adjustment of weights in the output layer (red
+ layer), and the other for calculating the adjustment in weights of the 
+hidden layer (yellow), and the input layer (green).
+</p><p>(2)    <span style="color: rgb(153, 51, 153);">∆</span><span style="color: rgb(153, 51, 153);">w</span><sub style="color: rgb(153, 51, 153);">kj</sub> = ɳ * (<span>t<sub style="color: rgb(204, 0, 0);">k</sub> - <span style="color: rgb(204, 0, 0);">z</span><sub style="color: rgb(204, 0, 0);">k</sub></span>) * f'(<span style="color: rgb(153, 51, 153);">net</span><sub style="color: rgb(153, 51, 153);">k</sub>) * <span style="color: rgb(204, 153, 51);">y</span><sub style="color: rgb(204, 153, 51);">j</sub>
+</p><p>This is the equation to adjust the <span style="color: rgb(153, 51, 153);">input weights (purple)</span> of the <span style="color: rgb(204, 0, 0);">output layer</span>.  It's not too bad, and I'll go through each part.
+</p>
+<ul><li>ɳ - The eta (funny looking 'n') in the beginning is the learning
+ rate.  This is a variable you tweak to adjust how fast the neural 
+network learns.  I'll talk more about that some other time, but don't 
+think that you'd want to set this as high as possible.
+</li><li>(<span>t<sub style="color: rgb(204, 0, 0);">k</sub> - <span style="color: rgb(204, 0, 0);">z</span><sub style="color: rgb(204, 0, 0);">k</sub></span>) - Next, note that <span>t<sub>k</sub> - z<sub>k</sub></span> aren't bolded, so they are two numbers:  1) what the output was suppose to be  2) and the output of the neural network of the <span style="color: rgb(204, 0, 0);">kth output node</span>.  For us, we only have one output node.</li><li>f'(<span style="color: rgb(153, 51, 153);">net</span><sub style="color: rgb(153, 51, 153);">k</sub>) - Remember back in <a href="http://webjazz.blogspot.com/2007/04/erlang-and-neural-networks-part-ii.html" class="external text" title="http://webjazz.blogspot.com/2007/04/erlang-and-neural-networks-part-ii.html" rel="nofollow">part II</a>, where we were talking about the <a href="http://en.wikipedia.org/wiki/Sigmoid_function" class="external text" title="http://en.wikipedia.org/wiki/Sigmoid_function" rel="nofollow">sigmoid function</a>?  f'(<span><span><span>x</span></span></span>) is the derivative of the sigmoid function.  If I haven't forgotten my calculus, it should be:
+<p>(3)    f'(x) = e<sup>-x</sup> / (1 + e<sup>-2x</sup>)
+</p>
+</li><li><span style="color: rgb(153, 51, 153);">net</span><sub style="color: rgb(153, 51, 153);">k</sub> is the <a href="http://en.wikipedia.org/wiki/Dot_product" class="external text" title="http://en.wikipedia.org/wiki/Dot_product" rel="nofollow">dot product</a> of the <span style="color: rgb(153, 51, 153);">output node weights</span> with the <span style="color: rgb(204, 153, 51);">inputs</span> (<span style="color: rgb(204, 153, 51);">y</span><sub style="color: rgb(204, 153, 51);">j</sub>) of the <span style="color: rgb(204, 0, 0);">output node</span>.  Note that <span style="color: rgb(204, 153, 51);">y</span><sub style="color: rgb(204, 153, 51);">j</sub> is also the outputs of the <span style="color: rgb(204, 153, 51);">hidden layer</span>, and it is calculated by f(<span style="color: rgb(51, 102, 255);">net</span><sub style="color: rgb(51, 102, 255);">j</sub>)--note that this is a regular sigmoid.
+</li></ul>In equation (2) above, we'll need a part of it to send back to the <span style="color: rgb(204, 153, 51);">hidden layers</span>.
+  We'll represent it by a lower case delta (looks like an 'o' with a 
+squiggly on top).  It is called the sensitivity.  This is what we 
+propagate back to the other layers, and where the technique gets its 
+name.
+<p>(4)    <span style="color: rgb(204, 0, 0);">δ</span><sub style="color: rgb(204, 0, 0);">k</sub> = (<span>t<sub style="color: rgb(204, 0, 0);">k</sub> - <span style="color: rgb(204, 0, 0);">z</span><sub style="color: rgb(204, 0, 0);">k</sub></span>) * f'(net<sub>k</sub>)
+</p><p>The second equation dictates how to adjust all <span style="color: rgb(204, 153, 51);">hidden layers</span>.  Note that it uses the sensitivity variable:
+</p><p>(5)    <span style="color: rgb(51, 102, 255);">∆</span><span style="color: rgb(51, 102, 255);">w<sub>ji</sub></span> = ɳ * [∑<sub><span style="color: rgb(204, 0, 0);">k</span>=1 to c</sub> <span style="color: rgb(153, 51, 153);">w</span><sub style="color: rgb(153, 51, 153);">kj</sub><span style="color: rgb(204, 0, 0);">δ</span><sub style="color: rgb(204, 0, 0);">k</sub>] * f'(<span style="color: rgb(51, 102, 255);">net</span><sub style="color: rgb(51, 102, 255);">j</sub>) * <span style="color: rgb(0, 153, 0);">x</span><sub style="color: rgb(0, 153, 0);">i</sub>
+</p>
+<ul><li>As you can see, this is more of the same.  The only difference is the second term, which is the dot product of all the <span style="color: rgb(153, 51, 153);">output node input weights</span> (<span style="color: rgb(153, 51, 153);">w</span><sub style="color: rgb(153, 51, 153);">kj</sub>) from a <span style="color: rgb(204, 153, 51);">hidden node</span> and the sensitivities (<span style="color: rgb(204, 0, 0);">δ</span><sub style="color: rgb(204, 0, 0);">k</sub>) across all output nodes the <span style="color: rgb(204, 153, 51);">hidden node</span> is connected to.</li><li><span style="color: rgb(51, 102, 255);">net</span><sub style="color: rgb(51, 102, 255);">j</sub> is like as before--it's the dot product of the inputs <span style="color: rgb(0, 153, 0);">x</span><sub style="color: rgb(0, 153, 0);">i</sub>   with the <span style="color: rgb(51, 102, 255);">inputs weights</span> of the <span style="color: rgb(204, 153, 51);">hidden nodes</span>.
+</li></ul>
+<a name="If_your_eyes_glazed_over"></a><h3><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=19" title="Edit section: If your eyes glazed over">edit</a>]</span> <span class="mw-headline"> If your eyes glazed over </span></h3>
+<p>If your eyes glazed over in the last part, <b>pay attention here, because this is the important part.</b>
+</p><p>From equation (5), it tells us what we'll need to code.  It tells us that from the perspective a single <span style="color: rgb(204, 153, 51);">hidden node</span>, the adjustment of its <span style="color: rgb(51, 102, 255);">input weights</span> depends on:
+</p>
+<ol>
+<li>From the 2nd term: the set of sensitivities and the <span style="color: rgb(153, 51, 153);">associated weights of the output layer</span> from the <span style="color: rgb(204, 0, 0);">next layer</span> that the <span style="color: rgb(204, 153, 51);">hidden node</span> is connected to.</li>
+<li>From the 3rd term: the <span style="color: rgb(0, 153, 0);">set of inputs from the previous layer</span> (because we calculate f'(<span style="color: rgb(51, 102, 255);">net</span><sub style="color: rgb(51, 102, 255);">j</sub>), since it is the dot product of <span style="color: rgb(0, 153, 0);">x</span><sub style="color: rgb(0, 153, 0);">i</sub> and <span style="color: rgb(51, 102, 255);">w<sub>ji</sub></span> for all <span style="color: rgb(0, 153, 0);">i</span>.)</li>
+</ol>
+<p>You can better see this in a picture.  GIMP again.
+</p>
+<pre>                <a href="http://www.trapexit.org/Image:Single_node.png" class="image" title="Image:single_node.png"><img alt="Image:single_node.png" longdesc="/Image:Single_node.png" src="Erlang_and_Neural_Networks_files/Single_node.png" height="300" width="420"></a>
+</pre>
+<p>I know we don't have 3 output nodes and 4 input nodes.  It's just to 
+illustrate that from the perspective of the hidden node, this would be 
+the information it needs from the layers surrounding it to adjust its 
+input weights.  
+</p><p>In the code base we've written so far, the input weights are contained as in the perceptron.  So <span style="color: rgb(51, 102, 255);">w<sub>ji</sub></span> would belong to the <span style="color: rgb(204, 153, 51);">hidden layer</span>, and <span style="color: rgb(153, 51, 153);">w</span><sub style="color: rgb(153, 51, 153);">kj</sub> would belong to the <span style="color: rgb(204, 0, 0);">output layer</span>.  Therefore, the <span style="color: rgb(204, 0, 0);">output layer</span> would need to send both the sensitivity and the <span style="color: rgb(153, 51, 153);">output layer input weights</span> back to the <span style="color: rgb(204, 153, 51);">hidden node</span>.
+</p><p>This perspective is important, because Erlang follows an Actor 
+model, where you model the problem as individual agents that pass 
+messages back and forth to each other.  We have now written how each 
+individual node adjusts its weights, and that will help us in our 
+coding.
+</p><p>This also means that as the current implementation is headed, I 
+am assuming an asynchronous model of the neural network.  Each 
+perceptron will update when any of its inputs change.  That means, like a
+ digital circuit, there will be a minimum time that it takes for the 
+output to reach a correct steady state and for the weight adjustments to
+ propagate back.  What this minimum time will be, will probably depend 
+on the number of hidden layers.  We'll see if it'll work.  I have a 
+hunch it should be ok, as long as the inputs are throttled to wait until
+ the minimal time passes before feeding it a new set of inputs.  It 
+might result a lot of unnecessary messages, but if we can get away with 
+it while keeping the code simple, I think it's probably worth it.
+</p><p>Next time, we'll get to the code.  I had intended to get to it 
+this installment, but the code will make a lot more sense if you know 
+what the math is saying about it.
+</p>
+<a name="Refactoring_code"></a><h2><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=20" title="Edit section: Refactoring code">edit</a>]</span> <span class="mw-headline"> Refactoring code </span></h2>
+<p>I wrote this as a series over time, so I had to refactor some of the 
+code before continuing.  I decided to leave it in, since it shows off 
+some of the features of functional style programming, for those of you 
+coming from an imperative background.
+</p>
+<a name="Vector_map"></a><h3><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=21" title="Edit section: Vector map">edit</a>]</span> <span class="mw-headline"> Vector map </span></h3>
+<p>map() is a function that applies the same operation to all elements 
+in an array.  I needed a function that is a map for two different lists 
+of the same length.  Vector and matrix addition relies on this:
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>[1,2,3] + [4,5,6] = [5,10,18]
+</pre></td></tr></tbody></table>
+<p>I couldn't find one in the erlang APIs, so I wrote one myself.  Ends up this code is used in a couple places.
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>% like map, but with two lists instead.
+vector_map(Func, [], []) -&gt;
+    [];
+vector_map(Func, [Xh | Xt], [Yh | Yt]) -&gt;
+    [Func(Xh, Yh) | vector_map(Func, Xt, Yt)].</pre></td></tr></tbody></table>
+<p>This looks very much like the code for the previous dot_prod().  Let's keep things DRY and make dot_prot() use vector_map.
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>% Calculates the dot product of two lists
+dot_prod(X, Y) -&gt;
+    lists:foldl(fun(E, Sum) -&gt; E + Sum end, 0,
+                vector_map(fun(Ex, Ey) -&gt; Ex * Ey end, X, Y)).
+</pre></td></tr></tbody></table>
+<p>So vector_map() takes the the nth element and multiplies them 
+together.  foldl() is very much like reduce() in MapReduce or inject() 
+in ruby.  It takes all the elements and sums it up.  
+</p>
+<a name="f.27.28netj.29"></a><h3><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=22" title="Edit section: f'(netj)">edit</a>]</span> <span class="mw-headline"> f'(net<sub>j</sub>) </span></h3>
+<p>We need to calculate the feed forward, but with the derivative of the sigmoid function.  
+</p><p>Recall that our feed_forward function looks like this:
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>sigmoid(X) -&gt;
+   1 / (1 + math:exp(-X)).
+
+feed_forward(Weights, Inputs) -&gt;
+   sigmoid(dot_prod(Weights, Inputs)).</pre></td></tr></tbody></table>
+<p>According to our calculations in the last part, we also need the 
+derivative of the sigmoid function, but with the same stuff passed into 
+it.  So we could write another function like this:
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>sigmoid_deriv(X) -&gt;
+   math:exp(-X) / (1 + math:exp(-2 * X)).
+
+feed_forward_deriv(Weights, Inputs) -&gt;
+   sigmoid_deriv(dot_prod(Weights, Inputs)).
+</pre></td></tr></tbody></table>
+<p>This is a waste, since the two versions of feed forward are 
+essentially doing the same thing.  Here is where we can use first-class 
+functions to get around it.
+</p><p>Languages that support first class functions are powerful because
+ you can pass functions in and out of other functions as arguments.  
+This is nice because you don't need a lot of structure to get things 
+done--no messing around with anonymous inner classes and function 
+pointers.  
+</p><p>Instead, we'll write a new Sigmoid functions in perceptron and the feed_forward function outside of it.
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>perceptron(Weights, Inputs, [other variables]) -&gt;
+  Sigmoid = fun(X) -&gt;
+               1 / (1 + math:exp(-X))
+            end,
+
+  Sigmoid_deriv = fun(X) -&gt;
+                    math:exp(-X) / (1 + math:exp(-2 * X))
+                  end,
+  receive
+    % perceptron messages...
+  end.
+
+feed_forward(Func, Weights, Inputs) -&gt;
+   Func(dot_prod(Weights, Inputs)).
+</pre></td></tr></tbody></table>
+<p>So now if we want to feed forward with a particular non-linear activation function, we just tack it on as an argument!
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>feed_forward(Sigmoid, [1, 2], [2, 3]).        % f(net)
+feed_forward(Sigmoid_deriv, [1, 2], [2, 3]).  % f'(net)
+</pre></td></tr></tbody></table>
+<a name="Some_helper_functions_to_refactor"></a><h3><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=23" title="Edit section: Some helper functions to refactor">edit</a>]</span> <span class="mw-headline"> Some helper functions to refactor </span></h3>
+<p>Remember convert_to_list?
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>convert_to_list(Inputs) -&gt;
+    lists:map(fun(Tup) -&gt; 
+                      {_, Val} = Tup, 
+                      Val
+              end,
+              Inputs).</pre></td></tr></tbody></table>
+<p>Let's change it to convert_to_value and add a convert_to_key function:
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>convert_to_values(Tuple_list) -&gt;
+    lists:map(fun(Tup) -&gt; 
+                      {_, Val} = Tup, 
+                      Val
+              end,
+              Tuple_list).
+
+convert_to_keys(Tuple_list) -&gt;
+    lists:map(fun(Tup) -&gt;
+                      {Key, _} = Tup,
+                      Key
+              end,
+              Tuple_list).
+</pre></td></tr></tbody></table>
+<p>Again, I'm sure there's a good erlang call for this, but I couldn't 
+find any.  I decided not to use first class functions here, because 
+calling it would have been a pain if I had to pass in the function. that
+ just selected either the first or last element in a tuple.
+</p>
+<a name="Taking_note_of_sensitivities"></a><h3><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=24" title="Edit section: Taking note of sensitivities">edit</a>]</span> <span class="mw-headline"> Taking note of sensitivities </span></h3>
+<p>We also need to adjust our perceptron to keep the sensitivities from 
+the next layer, in the same way we keep the outputs from the previous 
+layer.  That means that our perceptron will no longer keep a list of 
+just Output_PIDs, but a list of tuples [{OutputPID_1, Sensitivity_1}, 
+... {OutputPID_n, Sensitivity_n}], called Sensitivities.
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>perceptron(Weights, Inputs, <span style="font-weight:bold;">Sensitivities</span>) -&gt;
+    receive
+        {stimulate, Input} -&gt;
+            New_inputs = replace_input(Inputs, Input),
+            Output_value = feed_forward(Sigmoid, Weights, convert_to_values(New_inputs)),
+            if Sensitivities =/= [] -&gt;
+                    % My output's connected to at least one perceptron:
+                    lists:foreach(fun(Output_PID) -&gt; 
+                                          Output_PID&nbsp;! {stimulate, {self(), Output_value}}
+                                  end,
+                                  <span style="font-weight:bold;">convert_to_keys(Sensitivities)</span>);
+               Sensitivities =:= [] -&gt;
+                    % My output's connected to no one:
+                    io:format("~w outputs: ~w~n", [self(), Output_value]),
+                    % Call a trainer here instead and 
+                    self()&nbsp;! {learn, {self(), 1}}
+            end,
+            perceptron(Weights, New_inputs, <span style="font-weight:bold;">Sensitivities</span>);
+
+            % other messages....
+    end.
+</pre></td></tr></tbody></table>
+<p>We'll need to do this for all occurrences of Output_PID in other 
+messages, such as pass, connect_to_output, and connect_to_input.  When 
+we need a list of Output_PIDs, we simply call 
+convert_to_keys(Sensitivities).
+</p>
+<a name="The_actual_learning"></a><h3><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=25" title="Edit section: The actual learning">edit</a>]</span> <span class="mw-headline"> The actual learning </span></h3>
+<p>Now that we have all that other stuff out of the way, we can actually
+ write the learning message of a perceptron.  The steps will be:
+</p>
+<ol><li> Update the list of sensitivities from the previous layer
+</li><li> Calculate the sensitivity for this node
+</li><li> Adjust all the weights based on the sensitivity
+</li><li>Propagate sensitivities and associated weight back to the previous layer
+</li></ol>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>perceptron(Weights, Inputs, Sensitivities) -&gt;
+    receive
+        {learn, Backprop} -&gt; 
+            Learning_rate = 0.5,
+
+            % Calculate the correct sensitivities
+            New_sensitivities = add_sensitivity(Sensitivities, Backprop),
+            Output_value = feed_forward(Sigmoid, Weights, convert_to_values(Inputs)),
+            Derv_value = feed_forward(Sigmoid_deriv, Weights, convert_to_values(Inputs)),
+            Sensitivity = calculate_sensitivity(Backprop, Inputs, New_sensitivities,
+                                                Output_value, Derv_value),
+            io:format("(~w) New Sensitivities: ~w~n", [self(), New_sensitivities]),
+            io:format("(~w) Calculated Sensitivity: ~w~n", [self(), Sensitivity]),
+
+            % Adjust all the weights
+            Weight_adjustments = lists:map(fun(Input) -&gt; 
+                                                   Learning_rate * Sensitivity * Input 
+                                           end,
+                                           convert_to_values(Inputs)),
+            New_weights = vector_map(fun(W, D) -&gt; W + D end, Weights, Weight_adjustments),
+            io:format("(~w) Adjusted Weights: ~w~n", [self(), Weights]),
+
+            % propagate sensitivities and associated weights back to the previous layer
+            vector_map(fun(Weight, Input_PID) -&gt;
+                               Input_PID&nbsp;! {learn, {self(), Sensitivity * Weight}}
+                       end,
+                       New_weights,
+                       convert_to_keys(Inputs)),
+            
+            perceptron(New_weights, Inputs, New_sensitivities);
+
+            % The other messages...
+    end.</pre></td></tr></tbody></table>
+<p>Notice there's a couple helper functions in there to help with the sensitivities.
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>% adds the propagating sensitivity to the Sensitivities Hash
+add_sensitivity(Sensitivities, Backprop) when Sensitivities =/= [] -&gt;
+    replace_input(Sensitivities, Backprop);
+add_sensitivity(Sensitivities, Backprop) when Sensitivities =:= [] -&gt;    
+    [].
+
+% Calculates the sensitivity of this particular node
+calculate_sensitivity(Backprop, Inputs, Sensitivities, Output_value, Derv_value) 
+  when Sensitivities =/= [], Inputs =:= [] -&gt; % When the node is an input node:
+    null;
+calculate_sensitivity(Backprop, Inputs, Sensitivities, Output_value, Derv_value) 
+  when Sensitivities =:= [], Inputs =/= [] -&gt; % When the node is an output node:
+    {_, Training_value} = Backprop,
+    (Training_value - Output_value) * Derv_value;
+calculate_sensitivity(Backprop, Inputs, Sensitivities, Output_value, Derv_value) 
+  when Sensitivities =/= [], Inputs =/= [] -&gt; % When the node is a hidden node:
+    Derv_value * lists:foldl(fun(E, T) -&gt; E + T end, 0, convert_to_values(Sensitivities)).</pre></td></tr></tbody></table>
+<p>Note that there are guards (the conditions that start with "when") on
+ each of these functions.  They are the different cases for how to 
+calculate the sensitivity, given whether the node was an input node, an 
+output node, or a hidden node.  
+</p>
+<a name="Test_Run"></a><h3><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=26" title="Edit section: Test Run">edit</a>]</span> <span class="mw-headline"> Test Run </span></h3>
+<p>So as a little test, we can exercise it by writing a function called run(), and running it from the command line:
+</p>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>run() -&gt;
+    X1_pid = spawn(ann, perceptron, [[],[],[]]),
+    X2_pid = spawn(ann, perceptron, [[],[],[]]),
+    H1_pid = spawn(ann, perceptron, [[],[],[]]),
+    H2_pid = spawn(ann, perceptron, [[],[],[]]),
+
+    O_pid = spawn(ann, perceptron,  [[],[],[]]),
+
+    % Connect input node X1 to hidden nodes H1 and H2
+    ann:connect(X1_pid, H1_pid),
+    ann:connect(X1_pid, H2_pid),
+
+    % Connect input node X2 to hidden nodes H1 and H2
+    ann:connect(X2_pid, H1_pid),
+    ann:connect(X2_pid, H2_pid),
+
+    % Connect input node H1 and H2 to output node O
+    ann:connect(H1_pid, O_pid),
+    ann:connect(H2_pid, O_pid),
+
+    X1_pid&nbsp;! {status},
+    X2_pid&nbsp;! {status},
+    H1_pid&nbsp;! {status},
+    H2_pid&nbsp;! {status},
+    O_pid&nbsp;! {status},
+
+    X1_pid&nbsp;! {pass, 1.8},
+    X2_pid&nbsp;! {pass, 1.3}.</pre></td></tr></tbody></table>
+<table class="ntable" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td bgcolor="#ddddff"><pre>233&gt; ann:run().
+Output of &lt;0.841.0&gt; connected to Input of &lt;0.843.0&gt;
+Output of &lt;0.841.0&gt; connected to Input of &lt;0.844.0&gt;
+Output of &lt;0.842.0&gt; connected to Input of &lt;0.843.0&gt;
+Output of &lt;0.842.0&gt; connected to Input of &lt;0.844.0&gt;
+Output of &lt;0.843.0&gt; connected to Input of &lt;0.845.0&gt;
+Output of &lt;0.844.0&gt; connected to Input of &lt;0.845.0&gt;
+Status of Node(&lt;0.841.0&gt;) 
+  W: []
+  I: []
+  S: [{&lt;0.844.0&gt;,0},{&lt;0.843.0&gt;,0}]
+Status of Node(&lt;0.842.0&gt;) 
+  W: []
+  I: []
+  S: [{&lt;0.844.0&gt;,0},{&lt;0.843.0&gt;,0}]
+Status of Node(&lt;0.843.0&gt;) 
+  W: [0.891633,-0.112831]
+  I: [{&lt;0.842.0&gt;,0.446080},{&lt;0.841.0&gt;,-0.815398}]
+  S: [{&lt;0.845.0&gt;,0}]
+Status of Node(&lt;0.844.0&gt;) 
+  W: [0.891633,-0.112831]
+  I: [{&lt;0.842.0&gt;,0.446080},{&lt;0.841.0&gt;,-0.815398}]
+  S: [{&lt;0.845.0&gt;,0}]
+Status of Node(&lt;0.845.0&gt;) 
+  W: [0.891633,-0.112831]
+  I: [{&lt;0.844.0&gt;,0.446080},{&lt;0.843.0&gt;,-0.815398}]
+  S: []
+{pass,1.30000}Stimulating &lt;0.844.0&gt; with 0.200000
+Stimulating &lt;0.844.0&gt; with 0.300000
+
+Stimulating &lt;0.843.0&gt; with 0.200000
+Stimulating &lt;0.843.0&gt; with 0.300000
+&lt;0.845.0&gt; outputs: 0.650328
+Stimulating &lt;0.844.0&gt; with 1.80000
+Stimulating &lt;0.844.0&gt; with 1.30000
+&lt;0.845.0&gt; outputs: 0.643857
+Stimulating &lt;0.843.0&gt; with 1.80000
+Stimulating &lt;0.843.0&gt; with 1.30000
+&lt;0.845.0&gt; outputs: 0.606653
+&lt;0.845.0&gt; outputs: 0.607508
+(&lt;0.845.0&gt;) New Sensitivities: []
+(&lt;0.845.0&gt;) Calculated Sensitivity: 0.178902
+(&lt;0.845.0&gt;) Adjusted Weights: [0.891633,-0.112831]
+&lt;0.845.0&gt; outputs: 0.610857
+(&lt;0.844.0&gt;) New Sensitivities: [{&lt;0.845.0&gt;,0.168491}]
+(&lt;0.843.0&gt;) New Sensitivities: [{&lt;0.845.0&gt;,-1.12092e-2}]
+&lt;0.845.0&gt; outputs: 0.655916
+
+...(clipped)...
+</pre></td></tr></tbody></table>
+<p>This is an asynchronous implementation of a feed-forward network, so 
+there will be a lot of messages flying around back and forth.  It is 
+outputting the results of the network at the same time it's adjusting 
+its weights.  One will see a finer-grain adjustment of the outputs, and 
+will have to wait until all stimulations have passed through the system 
+to grab the output.
+</p><p>One can cut down on these messages if you implement something 
+that keeps track of which inputs or sensitivities have been updated.  
+Wait until all inputs have been updated to stimulate the next layer, and
+ wait until all sensitivities have been updated to propagate back to the
+ next layer.  
+</p>
+<a name="The_trainer_and_bias"></a><h3><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=27" title="Edit section: The trainer and bias">edit</a>]</span> <span class="mw-headline"> The trainer and bias </span></h3>
+<p>So now the neural network knows how to learn!  All the hard part is 
+done.  However, there is one last part that I will leave as an exercise 
+to the reader--that is to write a trainer for the network.  
+</p><p>A trainer takes a list of examples, and feeds them to the 
+network, one at a time, and for each valid output(remember the 
+asynchronous network will output a series of values for any set of 
+inputs), find the difference with the training value and send it to the 
+learn message of the output node.
+</p><p>Right now, in the "stimulate" message, it simply calls the learn 
+method directly when an output node prints its output.  It always uses 
+"1" as the default training value.  This is just a place holder.  The 
+output of a network should call messages in a trainer, and do what was 
+described in the previous paragraph.
+</p><p>The current implementation also does not take explicit account of
+ biases for every node.  A bias is simply a weight in a node that is not
+ associated with any particular input, but is added to the dot product 
+before being sent through the sigmoid function. It does affect the 
+expressiveness of the neural network, so I will also leave that as an 
+exercise for the reader.
+</p>
+<a name="In_Conclusion"></a><h3><span class="editsection">[<a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit&amp;section=28" title="Edit section: In Conclusion">edit</a>]</span> <span class="mw-headline"> In Conclusion </span></h3>
+<p>Hopefully this has taken the mysticism out of neural networks, and 
+showed you some features of the Erlang programming language.  
+</p><p>Neural networks are a deep topic, and this article hasn't even 
+begun to scratch the surface.  As a mentioned before, there are many 
+different types of neural networks, and different ways of implementing 
+them.  Keep on learning.
+</p>
+<hr>
+<p>Wilhelm is at <a href="http://www.3cglabs.com/" class="external text" title="http://www.3cglabs.com/" rel="nofollow">3cglabs</a>
+ and is working on making people expand their world by helping them 
+discover the local adventures around them.  He writes a tech blog at <a href="http://webjazz.blogspot.com/" class="external free" title="http://webjazz.blogspot.com/" rel="nofollow">http://webjazz.blogspot.com/</a> where he highlights trends, Rails tips, and exploration of Erlang, Javascript, and Ruby.
+</p>
+<!-- Saved in parser cache with key trapexit_wiki:pcache:idhash:1691-0!1!0!!en!2 and timestamp 20130107052608 -->
+<div class="printfooter">
+Retrieved from "<a href="http://www.trapexit.org/Erlang_and_Neural_Networks">http://www.trapexit.org/Erlang_and_Neural_Networks</a>"</div>
+	    <div id="catlinks"><p class="catlinks"><a href="http://www.trapexit.org/Special:Categories" title="Special:Categories">Categories</a>: <span dir="ltr"><a href="http://www.trapexit.org/Category:AI" title="Category:AI">AI</a></span> | <span dir="ltr"><a href="http://www.trapexit.org/Category:Articles" title="Category:Articles">Articles</a></span></p></div>	    <!-- end content -->
+	    <div class="visualClear"></div>
+	  </div>
+	</div>
+      </div>
+      <div id="column-one">
+<div class="portlet" id="p-logo">
+	  <a style="background-image: url(/skins/common/images/trapexit-logo.png);" href="http://www.trapexit.org/Main_Page" title="Main Page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div id="p-search" class="portlet">
+	  <h5><label for="searchInput">Search</label></h5>
+	  <div class="pBody">
+<form method="get" action="http://www.google.com/search">
+    <input name="domains" value="trapexit.org" type="hidden">
+    <input name="num" value="50" type="hidden">
+    <input name="ie" value="$2" type="hidden">
+    <input name="oe" value="$2" type="hidden">
+    <input name="sitesearch" value="trapexit.org" type="hidden">    
+    <input name="q" size="18" maxlength="255" type="text">
+    <input name="btnG" value="Google Search" type="submit">
+<!--
+  <div style="font-size:90%">
+    <input type="radio" name="sitesearch" id="gwiki" value="trapexit.org" checked="checked" />
+			   <label for="gwiki">trapexit.org</label>
+    <input type="radio" name="sitesearch" id="gWWW" value="" /><label for="gWWW">WWW</label>
+  </div>
+-->
+</form>
+	  </div>
+	</div>
+		<div class="portlet" id="p-navigation">
+	  <h5>Navigation</h5>
+	  <div class="pBody">
+	    <ul>
+	    	      <li id="n-Home"><a href="http://www.trapexit.org/">Home</a></li>
+	     	      <li id="n-Erlang/OTP-Forums"><a href="http://forum.trapexit.org/">Erlang/OTP Forums</a></li>
+	     	      <li id="n-Erlang-Mailing-Lists"><a href="http://forum.trapexit.org/mailinglists">Erlang Mailing Lists</a></li>
+	     	      <li id="n-Erlang-Wiki"><a href="http://www.trapexit.org/Erlang_Wiki">Erlang Wiki</a></li>
+	     	      <li id="n-Recent-Changes"><a href="http://www.trapexit.org/Special:Recentchanges">Recent Changes</a></li>
+	     	      <li id="n-Links"><a href="http://www.trapexit.org/Links">Links</a></li>
+	     	      <li id="n-Contact"><a href="http://www.trapexit.org/Contact">Contact</a></li>
+	     	      <li id="n-tryerlang.org"><a href="http://www.tryerlang.org/">tryerlang.org</a></li>
+	     	    </ul>
+	  </div>
+	</div>
+		<div class="portlet" id="p-Erlang/OTP Projects">
+	  <h5>Erlang/OTP Projects</h5>
+	  <div class="pBody">
+	    <ul>
+	    	      <li id="n-User-Contributions"><a href="http://www.trapexit.org/Special:UserContributions">User Contributions</a></li>
+	     	      <li id="n-Open-Source"><a href="http://projects.trapexit.org/">Open Source</a></li>
+	     	    </ul>
+	  </div>
+	</div>
+		<div class="portlet" id="p-Documentation">
+	  <h5>Documentation</h5>
+	  <div class="pBody">
+	    <ul>
+	    	      <li id="n-Tutorials"><a href="http://www.trapexit.org/Category:HowTo">Tutorials</a></li>
+	     	      <li id="n-Articles"><a href="http://www.trapexit.org/Category:Articles">Articles</a></li>
+	     	      <li id="n-Erlang-CookBook"><a href="http://www.trapexit.org/Category:CookBook">Erlang CookBook</a></li>
+	     	      <li id="n-FAQ"><a href="http://www.erlang.org/faq/faq.html">FAQ</a></li>
+	     	    </ul>
+	  </div>
+	</div>
+			<div class="portlet" id="p-Planet">
+		<h5>Planet Trapexit</h5>
+		<div class="pBody">
+		<ul>
+		<li id="n-FeedAll"><a href="http://planet.trapexit.org/rss20.xml"><img src="Erlang_and_Neural_Networks_files/rss2.gif"></a> <a href="http://planet.trapexit.org/" title="Erlang/OTP Related RSS Feeds">All Feeds</a></li>
+		<li id="n-FeedBlog"><a href="http://planet.trapexit.org/general/rss20.xml"><img src="Erlang_and_Neural_Networks_files/rss2.gif" hspace="0" vspace="0" align="bottom"></a> <a href="http://planet.trapexit.org/general/" title="General Erlang/OTP Related Feeds and Blogs">General Erlang</a></li>
+		<li id="n-FeedCom"><a href="http://planet.trapexit.org/com/rss20.xml"><img src="Erlang_and_Neural_Networks_files/rss2.gif"></a> <a href="http://planet.trapexit.org/com/" title="Erlang/OTP Related RSS Feeds from Commercial Companies">Commercial</a></li>
+
+		<li id="n-FeedSW"><a href="http://planet.trapexit.org/software/rss20.xml"><img src="Erlang_and_Neural_Networks_files/rss2.gif"></a> <a href="http://planet.trapexit.org/software" title="Erlang/OTP Related Software Project RSS Feeds">Software Projects</a></li>
+		<li id="n-FeedSW"><a href="http://www.trapexit.org/index.php/RssFeeds" title="Trapexit Feeds">Trapexit Feeds</a></li>
+		<li id="n-FeedSW"><a href="http://www.trapexit.org/index.php/Special:PlanetAdmin" title="Planet Admin">Planet Admin</a></li>
+		</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-bookmarks">
+	  <div class="pBody">
+	 <h5>Bookmark</h5>
+	<ul>
+		<li>
+	 	  <a href="http://digg.com/submit?phase=2&amp;url=http://www.trapexit.org/Erlang_and_Neural_Networks&amp;title=Erlang%20Community%20-%20Erlang%20and%20Neural%20Networks%20-%20Trapexit"><img src="Erlang_and_Neural_Networks_files/digg.gif">&nbsp;Digg It</a>
+		</li>
+		<li>
+	 	  <a href="http://del.icio.us/post?url=http://www.trapexit.org/Erlang_and_Neural_Networks&amp;title=Erlang%20Community%20-%20Erlang%20and%20Neural%20Networks%20-%20Trapexit"><img src="Erlang_and_Neural_Networks_files/delicious.gif">&nbsp;Del.icio.us</a>
+		</li>
+		<li>
+		 <a href="http://reddit.com/submit?url=http://www.trapexit.org/Erlang_and_Neural_Networks&amp;title=Erlang%20Community%20-%20Erlang%20and%20Neural%20Networks%20-%20Trapexit"><img src="Erlang_and_Neural_Networks_files/reddit.gif">&nbsp;Reddit</a>
+		</li>
+		<li>
+		 <a href="http://www.facebook.com/sharer.php?u=http://www.trapexit.org/Erlang_and_Neural_Networks"><img src="Erlang_and_Neural_Networks_files/facebook.gif">&nbsp;Facebook</a>
+		</li>
+		<li>
+		 <a href="http://www.stumbleupon.com/submit?url=http://www.trapexit.org/Erlang_and_Neural_Networks&amp;title=Erlang%20Community%20-%20Erlang%20and%20Neural%20Networks%20-%20Trapexit"><img src="Erlang_and_Neural_Networks_files/stumbleupon.gif">&nbsp;Stumble Upon</a>
+		</li>
+		<li>
+		 <a href="http://technorati.com/faves?add=http://www.trapexit.org/Erlang_and_Neural_Networks"><img src="Erlang_and_Neural_Networks_files/technorati.gif">&nbsp;Technorati</a>
+		</li>
+	</ul>
+	  </div>
+	</div>
+	<div class="portlet" id="p-personal">
+	  <h5>Personal tools</h5>
+	  <div class="pBody">
+	    <ul>
+	    <li id="pt-login"><a href="http://www.trapexit.org/index.php?title=Special:Userlogin&amp;returnto=Erlang_and_Neural_Networks">Log in / create account</a></li>	    </ul>
+	  </div>
+	</div>
+    <div class="portlet" style="border: 0">
+	  <div class="pBody">
+		<center>
+		<h5>&nbsp;</h5>
+			<h1>&nbsp;</h1>
+			<div style="position: relative;" id="books">
+				<a style="position: absolute; top: 0px; left: 0px; display: none; z-index: 2; opacity: 0;" href="http://oreilly.com/catalog/9781934356005/" target="_blank">
+					<img src="Erlang_and_Neural_Networks_files/1.gif"></a>
+				
+				<a style="position: absolute; top: 0px; left: 0px; display: block; z-index: 1; opacity: 1;" href="http://oreilly.com/catalog/9780596518189/" target="_blank">
+					<img src="Erlang_and_Neural_Networks_files/2.gif"></a>
+				
+			</div>
+		</center>
+		</div>
+	</div>
+    <div class="portlet" style="broder: 0">
+	  <div class="pBody">
+		<center>
+	<br>
+		<h5>&nbsp;</h5>
+			    <a href="http://www.erlang.org/" target="_blank">
+			    <img src="Erlang_and_Neural_Networks_files/erlang.gif"></a>
+		   </center>
+		</div>
+	</div>
+    </div>
+		      </div><!-- end of the left (by default at least) column -->
+      <div class="visualClear"></div>
+      <div id="footer">
+			<table width="100%">
+			<tbody><tr>
+				<td align="center">
+	    	    		       <a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=edit">Edit</a> | 		       <a href="http://www.trapexit.org/index.php?title=Erlang_and_Neural_Networks&amp;action=history">History</a>	  <br>Hosted by <a href="http://www.erlang-solutions.com/" title="Erlang Solutions">Erlang</a>
+	  <a href="http://www.erlang-solutions.com/" title="Erlang Solutions">Solutions</a>
+	  		<br>
+	</td>
+      
+    
+    <!-- Served by localhost.localdomain in 0.301 secs. -->  
+
+</tr></tbody></table></div></body></html>
